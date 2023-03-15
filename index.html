@@ -8,6 +8,7 @@
     body {
       margin: 0;
       padding: 0;
+      background-color: black;
     }
 
     .video-container {
@@ -15,6 +16,7 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      position: relative; /* Add position:relative to the video-container */
     }
 
     .video-container video {
@@ -36,30 +38,66 @@
       left: 50%;
       transform: translate(-50%, -50%);
     }
+
+    /* Add styles for the message */
+    .message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 10px 20px;
+      border: 5px solid #FF0000;
+      border-radius: 5px;
+      font-size: 35px;
+      color: #FF0000;
+      text-align: center;
+      display: none; /* Hide the message by default */
+      font-family: 'Creepster', cursive;
+      text-shadow: 3px 3px 3px #000000;
+    }
+
+    /* Add class to show the message and frame after video ended */
+    .show {
+      display: block;
+    }
   </style>
 </head>
 <body>
   <div class="video-container">
-    <video id="my-video">
+    <video id="my-video" controlsList="nodownload" loop>
       <source src="dont_play.mp4" type="video/mp4">
     </video>
     <button class="play-button btn btn-primary">Play</button>
+    <div class="message">Look  Behind You.</div>
+    <div class="frame"></div>
   </div>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.6.0/js/bootstrap.min.js"></script>
   <script>
-    var video = document.getElementById('my-video');
-    var playButton = document.querySelector('.play-button');
-    playButton.addEventListener('click', function() {
-      video.play();
-      playButton.style.display = 'none';
-    });
+var video = document.getElementById('my-video');
+var playButton = document.querySelector('.play-button');
+var message = document.querySelector('.message');
+var frame = document.querySelector('.frame');
+var timer; // Declare a variable to store the timer ID
 
-    // Add event listener to check if video playback has ended
-    video.addEventListener('ended', function() {
-      alert("You have been hacked.");
-    });
-  </script>
+playButton.addEventListener('click', function() {
+  video.volume = 1; // Set the volume to 1 (maximum)
+  video.play();
+  playButton.style.display = 'none';
+  // Start the timer after the play button is clicked
+  timer = setTimeout(function() {
+    message.classList.add('show');
+  }, 5000);
+});
+
+video.addEventListener('ended', function() {
+  if (!video.getAttribute('data-ended')) {
+    message.classList.add('show');
+    frame.classList.add('show');
+    video.setAttribute('data-ended', 'true');
+  }
+});
+  </script>  
 </body>
-</html> 
+</html>
